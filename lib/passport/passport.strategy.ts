@@ -1,9 +1,10 @@
-import * as passport from 'passport';
+import passport, { Framework } from 'passport';
 import { Type } from '../interfaces';
 
 export function PassportStrategy<T extends Type<any> = any>(
   Strategy: T,
-  name?: string | undefined
+  name?: string | undefined,
+  framework?: Framework | undefined,
 ): {
   new (...args): InstanceType<T>;
 } {
@@ -38,6 +39,9 @@ export function PassportStrategy<T extends Type<any> = any>(
       super(...args, callback);
 
       const passportInstance = this.getPassportInstance();
+      if (framework) {
+        passportInstance.framework(framework);
+      }
       if (name) {
         passportInstance.use(name, this as any);
       } else {
